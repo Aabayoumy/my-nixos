@@ -1,0 +1,7 @@
+configuration {
+    modi: "drun,run,window";
+    font: "JetBrains Mono 12";
+    show-icons: true;
+}
+
+@theme "gruvbox-dark"
