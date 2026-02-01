@@ -1,6 +1,6 @@
 # Shared NixOS modules
 # Includes configurations for planned components
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -43,9 +43,24 @@
     vim
     wget
     gnumake # provides 'make'
-    psmisc  # provides 'killall'
+    psmisc # provides 'killall'
   ];
 
+  # Enable Thunar File Manager and related services
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
+  };
+
+  # Services required for Thunar functionality
+  services.gvfs.enable = true; # Mount, trash, and other functionality
+  services.tumbler.enable = true; # Thumbnail support
+  programs.xfconf.enable = true; # Thunar settings management
+
   # Firewall for code-server
+
   networking.firewall.allowedTCPPorts = [ 8080 ];
 }

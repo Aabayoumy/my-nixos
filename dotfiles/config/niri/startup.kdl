@@ -1,4 +1,5 @@
 // Start up Commands
+spawn-at-startup "swaybg" "-i" "~/Pictures/wallpapers/river-city-mocha.jpg" "-m" "fill"
 
 spawn-at-startup "dms" "run"
 // spawn-at-startup "qs" "-c" "noctalia-shell"

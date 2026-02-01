@@ -7,10 +7,46 @@
   ...
 }:
 
+let
+  # CHANGE ME: Path to your local flake repository
+  # This is required for "mutable" symlinks (live editing without rebuild).
+  # If you change the folder name, update this single line.
+  flakeDir = "/home/abayoumy/my-nixos";
+in
 {
   imports = [
     inputs.dank-material-shell.homeModules.dank-material-shell
   ];
+
+  # Styling Options
+  qt = {
+    enable = true;
+    platformTheme.name = "kvantum";
+    style.name = "kvantum";
+  };
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "catppuccin-mocha-mauve-standard";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "mauve" ];
+        size = "standard";
+        variant = "mocha";
+      };
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.catppuccin-papirus-folders.override {
+        flavor = "mocha";
+        accent = "mauve";
+      };
+    };
+    cursorTheme = {
+      name = "catppuccin-mocha-dark-cursors";
+      package = pkgs.catppuccin-cursors.mochaDark;
+    };
+  };
 
   # Home settings
   home.username = "abayoumy";
@@ -111,6 +147,20 @@
 
     curl
     gcc
+
+    # GUI Customization
+    swaybg
+    nwg-look
+    lxappearance
+
+    # Qt / Kvantum
+    libsForQt5.qt5ct
+    kdePackages.qt6ct
+    libsForQt5.qtstyleplugin-kvantum
+    kdePackages.qtstyleplugin-kvantum
+    kdePackages.qtwayland
+    libsForQt5.qtwayland
+    pkgs.catppuccin-kvantum
   ];
 
   # Enable Dank Material Shell
@@ -138,14 +188,14 @@
         {
           name = relativePath;
           value = {
-            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-laptop/dotfiles/home/${relativePath}";
+            source = config.lib.file.mkOutOfStoreSymlink "${flakeDir}/dotfiles/home/${relativePath}";
           };
         }
       ) (lib.filesystem.listFilesRecursive homeDotfilesDir)
     )
     // {
       "Pictures/wallpapers".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-laptop/dotfiles/wallpapers";
+        config.lib.file.mkOutOfStoreSymlink "${flakeDir}/dotfiles/wallpapers";
     };
 
   # Symlink configurations (Mutable Dotfiles)
@@ -168,12 +218,16 @@
           name = relativePath;
           value = {
             # Using mkOutOfStoreSymlink requires absolute path to the flake root or target file
-            # Assuming typical setup, but let's be careful.
-            # The original code hardcoded `nixos-laptop`. This is brittle if folder changes.
-            # But we will keep it for now as requested to reuse config.
-            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-laptop/dotfiles/config/${relativePath}";
+            # Now using the centralized `flakeDir` variable
+            source = config.lib.file.mkOutOfStoreSymlink "${flakeDir}/dotfiles/config/${relativePath}";
           };
         }
       ) (lib.filesystem.listFilesRecursive configDir)
-    );
+    )
+    // {
+      "Kvantum/kvantum.kvconfig".text = ''
+        [General]
+        theme=Catppuccin-Mocha-Mauve
+      '';
+    };
 }
