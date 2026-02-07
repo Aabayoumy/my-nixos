@@ -45,13 +45,6 @@ unset opt disabled_opts
 # if [[ -f "/opt/homebrew/bin/brew" ]] then
 #   # If you're using macOS, you'll want this enabled
 #   eval "$(/opt/homebrew/bin/brew shellenv)"
-# fi
-
-# gemini
-export GEMINI_API_KEY="AIzaSyCgApJh0V28aKq8N5yPkrcq_63XdVbp_PM"
-# Proxmox server ip 
-export proxmox_api_url_host="10.0.0.200"
-#"AIzaSyDLMYfNrl9HKyYEEThJxC-ka46QPT3ejTA"
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
